@@ -407,7 +407,9 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
-              <Logo className="h-14 w-auto mb-4" badgeClassName="w-12 h-12 mb-4" />
+              <div className="inline-block bg-white rounded-lg p-2 mb-4">
+                <Logo className="h-12 w-auto" badgeClassName="w-12 h-12" />
+              </div>
               <div className="font-bold text-white mb-2">Karate Atlanta Milton</div>
               <p className="text-sm">13083 Hwy 9, Ste 720<br />Milton, GA 30004</p>
             </div>
