@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ChevronRight, Star, Shield, Zap, Heart, Award, Flame } from 'lucide-react';
+import Logo from '@/components/Logo';
 
 /**
  * CHAMPIONSHIP ASCENT DESIGN PHILOSOPHY
@@ -57,9 +58,7 @@ export default function Home() {
       <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-200 transition-all duration-300">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-red-600 to-red-700 flex items-center justify-center">
-              <span className="text-white font-bold text-xl">K</span>
-            </div>
+            <Logo className="h-12 w-auto" badgeClassName="w-12 h-12" />
             <div>
               <div className="font-bold text-lg text-gray-900">Karate Atlanta</div>
               <div className="text-xs text-gray-600 tracking-widest uppercase">Milton, GA</div>
@@ -408,7 +407,8 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
-              <div className="font-bold text-white mb-4">Karate Atlanta Milton</div>
+              <Logo className="h-14 w-auto mb-4" badgeClassName="w-12 h-12 mb-4" />
+              <div className="font-bold text-white mb-2">Karate Atlanta Milton</div>
               <p className="text-sm">13083 Hwy 9, Ste 720<br />Milton, GA 30004</p>
             </div>
             <div>
