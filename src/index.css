@@ -1,0 +1,366 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ========================================
+   CHAMPIONSHIP ASCENT DESIGN SYSTEM
+   Premium martial arts aesthetic
+   ======================================== */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  /* Championship Ascent Color Palette */
+  --championship-red: #e11d2a;
+  --championship-red-dark: #b4121d;
+  --championship-red-light: #ff3d47;
+  --burnished-gold: #f5b301;
+  --gold-light: #ffd45e;
+  --charcoal-black: #0d1117;
+  --charcoal-dark: #161b26;
+  --pristine-white: #ffffff;
+  --warm-gray: #5b6577;
+  --warm-gray-light: #8a93a4;
+  --soft-border: #e4e8ef;
+
+  /* Primary brand colors */
+  --primary: #e11d2a;
+  --primary-foreground: #ffffff;
+  --sidebar-primary: #e11d2a;
+  --sidebar-primary-foreground: #ffffff;
+  --chart-1: #e11d2a;
+  --chart-2: #f5b301;
+  --chart-3: #0d1117;
+  --chart-4: #5b6577;
+  --chart-5: #8a93a4;
+
+  /* Semantic tokens */
+  --radius: 0.75rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.08 0.01 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.08 0.01 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.08 0.01 0);
+  --secondary: oklch(0.98 0.001 286.375);
+  --secondary-foreground: oklch(0.4 0.015 65);
+  --muted: oklch(0.967 0.001 286.375);
+  --muted-foreground: oklch(0.552 0.016 285.938);
+  --accent: #e11d2a;
+  --accent-foreground: #ffffff;
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.92 0.004 286.32);
+  --input: oklch(0.92 0.004 286.32);
+  --ring: #e11d2a;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.235 0.015 65);
+  --sidebar-accent: #e11d2a;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: oklch(0.92 0.004 286.32);
+  --sidebar-ring: #e11d2a;
+}
+
+.dark {
+  --primary: #e11d2a;
+  --primary-foreground: #ffffff;
+  --sidebar-primary: #e11d2a;
+  --sidebar-primary-foreground: #ffffff;
+  --background: oklch(0.141 0.005 285.823);
+  --foreground: oklch(0.85 0.005 65);
+  --card: oklch(0.21 0.006 285.885);
+  --card-foreground: oklch(0.85 0.005 65);
+  --popover: oklch(0.21 0.006 285.885);
+  --popover-foreground: oklch(0.85 0.005 65);
+  --secondary: oklch(0.24 0.006 286.033);
+  --secondary-foreground: oklch(0.7 0.005 65);
+  --muted: oklch(0.274 0.006 286.033);
+  --muted-foreground: oklch(0.705 0.015 286.067);
+  --accent: #e11d2a;
+  --accent-foreground: #ffffff;
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: #e11d2a;
+  --chart-1: #e11d2a;
+  --chart-2: #f5b301;
+  --chart-3: #0d1117;
+  --chart-4: #5b6577;
+  --chart-5: #8a93a4;
+  --sidebar: oklch(0.21 0.006 285.885);
+  --sidebar-foreground: oklch(0.85 0.005 65);
+  --sidebar-accent: #e11d2a;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: #e11d2a;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  a[href],
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+
+  /* Championship typography */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+}
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+      max-width: 1280px;
+    }
+  }
+
+  /* Championship Ascent Components */
+
+  /* Section dividers with diagonal cuts */
+  .section-divider {
+    @apply w-full h-16 md:h-24 relative overflow-hidden;
+  }
+
+  .section-divider svg {
+    @apply w-full h-full;
+  }
+
+  /* Achievement badges */
+  .achievement-badge {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full;
+    background: linear-gradient(135deg, rgba(225, 29, 42, 0.1), rgba(245, 179, 1, 0.1));
+    border: 1px solid rgba(225, 29, 42, 0.2);
+    color: #e11d2a;
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* Championship button styles */
+  .btn-championship {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-lg;
+    background: #e11d2a;
+    color: white;
+    box-shadow: 0 12px 32px rgba(225, 29, 42, 0.3);
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .btn-championship:hover {
+    background: #b4121d;
+    transform: translateY(-4px);
+    box-shadow: 0 20px 48px rgba(225, 29, 42, 0.4);
+  }
+
+  .btn-championship:active {
+    transform: scale(0.97);
+  }
+
+  .btn-championship-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-bold text-lg;
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .btn-championship-ghost:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: white;
+    transform: translateY(-4px);
+  }
+
+  /* Scroll reveal animations */
+  .reveal {
+    @apply opacity-0;
+    animation: revealUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .reveal.d1 {
+    animation-delay: 0.1s;
+  }
+
+  .reveal.d2 {
+    animation-delay: 0.2s;
+  }
+
+  .reveal.d3 {
+    animation-delay: 0.3s;
+  }
+
+  @keyframes revealUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Stat counter animation */
+  .stat-number {
+    @apply font-bold text-4xl md:text-5xl lg:text-6xl;
+    color: #e11d2a;
+  }
+
+  /* Feature card hover effect */
+  .feature-card {
+    @apply p-8 rounded-2xl border border-gray-200 transition-all duration-300;
+  }
+
+  .feature-card:hover {
+    @apply border-transparent;
+    box-shadow: 0 20px 48px rgba(225, 29, 42, 0.15);
+    transform: translateY(-8px);
+  }
+
+  /* Program card gradient backgrounds */
+  .program-card {
+    @apply relative rounded-2xl overflow-hidden min-h-96 flex flex-col justify-end p-8 text-white;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .program-card::before {
+    content: '';
+    @apply absolute inset-0 -z-10;
+    background: linear-gradient(180deg, transparent 20%, rgba(13, 17, 23, 0.5) 55%, rgba(13, 17, 23, 0.95) 100%);
+  }
+
+  /* Marquee animation */
+  .marquee-track {
+    @apply flex gap-0 whitespace-nowrap;
+    animation: marqueeScroll 28s linear infinite;
+  }
+
+  @keyframes marqueeScroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Form styling */
+  .form-input {
+    @apply w-full px-4 py-3 rounded-lg border border-gray-200 bg-white;
+    transition: all 0.2s;
+  }
+
+  .form-input:focus {
+    @apply outline-none;
+    border-color: #e11d2a;
+    box-shadow: 0 0 0 4px rgba(225, 29, 42, 0.1);
+  }
+
+  /* Eyebrow text */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 font-bold text-sm uppercase tracking-widest;
+    color: #e11d2a;
+  }
+
+  .eyebrow::before {
+    content: '';
+    @apply w-6 h-0.5 rounded-full;
+    background: #e11d2a;
+  }
+
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
