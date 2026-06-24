@@ -1,0 +1,19 @@
+# Render Blueprint — deploys the site as a static site (no server, no env vars).
+# Render auto-detects this file and pre-fills the settings below.
+services:
+  - type: web
+    name: karate-atlanta-milton
+    runtime: static
+    branch: claude/friendly-davinci-qt8mcl
+    buildCommand: ""          # No build step — plain HTML/CSS/JS
+    staticPublishPath: .      # index.html lives at the repo root
+    pullRequestPreviewsEnabled: true
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+    routes:
+      # Friendly URLs: let /programs resolve to /programs.html
+      - type: rewrite
+        source: /programs
+        destination: /programs.html
