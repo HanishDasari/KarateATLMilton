@@ -5,7 +5,7 @@ services:
     name: karate-atlanta-milton
     runtime: static
     branch: claude/friendly-davinci-qt8mcl
-    buildCommand: ""          # No build step — plain HTML/CSS/JS
+    buildCommand: echo "Static site — no build step needed"
     staticPublishPath: .      # index.html lives at the repo root
     pullRequestPreviewsEnabled: true
     headers:
