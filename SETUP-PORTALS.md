@@ -35,18 +35,19 @@ website stays on Render; Supabase stores the accounts and data. ~15 minutes.
 3. Go to `https://your-site/portal`, sign in → you'll land in the **Admin Portal**.
 
 ## 6. Add teachers and parents
-- **Add user** in Authentication for each teacher/parent (they default to `parent`).
-- To make someone a **teacher**, set their `role` to `teacher` in the `profiles` table.
-- Parents keep the default `parent` role.
+- In Supabase → **Authentication → Add user**, create an account for each
+  teacher and parent (email + password). They start with the `parent` role.
+- Then, signed in as **admin**, open the **Admin Portal → People & Roles** and
+  set each person's **name** and **role** (parent / teacher / admin) — no table
+  editing needed.
 
-## 7. Add students (so dashboards show real data)
-For now, add students in **Table Editor → `students`**:
-- `full_name`: the child's name
-- `belt`: e.g. White, Yellow, Green…
-- `parent_id`: the **id** from that parent's row in the `profiles` table
+## 7. Add students (right from the Admin Portal)
+In the **Admin Portal** you now have built-in tools:
+- **Add Student** — name, belt, and link a parent from the dropdown.
+- **Students** — change a student's belt, re-assign their parent, or remove them.
 
 Once a student is linked to a parent, the parent sees them in the Parent Portal,
-teachers can take their attendance, and admins see the totals.
+teachers can take their attendance, and admins see the totals — all live.
 
 ---
 
@@ -57,7 +58,6 @@ teachers can take their attendance, and admins see the totals.
 - **Admin:** live counts (members, students, weekly check-ins) and a people list.
 
 ## Nice next steps (ask anytime)
-- In-app **Add Student / assign roles / link parent** forms (so you never touch
-  the Supabase table editor).
-- Self-serve **parent sign-up** from the free-trial form.
+- Self-serve **parent sign-up** from the free-trial form (auto-creates the account).
 - Belt-test scheduling, messaging, class rosters per time slot.
+- Attendance history & progress reports for parents.

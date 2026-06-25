@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
   Heart, Shield, Award, LogOut, ChevronLeft, CreditCard, Calendar,
-  Users, TrendingUp, Loader2, AlertTriangle,
+  Users, TrendingUp, Loader2, AlertTriangle, Plus, Trash2,
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 import { useAuth } from '@/contexts/AuthContext';
@@ -278,48 +278,62 @@ function TeacherDashboard() {
   );
 }
 
+const BELTS = ['White', 'Yellow', 'Orange', 'Green', 'Blue', 'Purple', 'Red', 'Brown', 'Black'];
+const selectCls = 'px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:border-red-600 focus:ring-2 focus:ring-red-100 outline-none';
+
+interface ProfileRow { id: string; full_name: string | null; role: Role; }
+
 function AdminDashboard() {
-  const [counts, setCounts] = useState({ members: 0, students: 0, week: 0 });
-  const [members, setMembers] = useState<{ full_name: string | null; role: string }[]>([]);
+  const [profiles, setProfiles] = useState<ProfileRow[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [week, setWeek] = useState(0);
   const [loaded, setLoaded] = useState(false);
 
-  useEffect(() => {
+  async function refresh() {
     if (!supabase) return;
     const weekAgo = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
-    (async () => {
-      const [m, st, wk, list] = await Promise.all([
-        supabase!.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'parent'),
-        supabase!.from('students').select('id', { count: 'exact', head: true }),
-        supabase!.from('attendance').select('id', { count: 'exact', head: true }).gte('date', weekAgo),
-        supabase!.from('profiles').select('full_name, role').order('role').limit(12),
-      ]);
-      setCounts({ members: m.count ?? 0, students: st.count ?? 0, week: wk.count ?? 0 });
-      setMembers((list.data as { full_name: string | null; role: string }[]) ?? []);
-      setLoaded(true);
-    })();
-  }, []);
+    const [p, s, wk] = await Promise.all([
+      supabase.from('profiles').select('id, full_name, role').order('role'),
+      supabase.from('students').select('id, full_name, belt, parent_id').order('full_name'),
+      supabase.from('attendance').select('id', { count: 'exact', head: true }).gte('date', weekAgo),
+    ]);
+    setProfiles((p.data as ProfileRow[]) ?? []);
+    setStudents((s.data as Student[]) ?? []);
+    setWeek(wk.count ?? 0);
+    setLoaded(true);
+  }
+  useEffect(() => { refresh(); /* eslint-disable-next-line */ }, []);
+
+  const parents = profiles.filter((p) => p.role === 'parent');
+  const memberCount = parents.length;
+
+  if (!loaded) return <Centered><Loader2 className="w-8 h-8 text-red-600 animate-spin" /></Centered>;
 
   return (
     <div className="space-y-6">
       <div className="grid sm:grid-cols-3 gap-4">
-        <Stat icon={Users} label="Parent Members" value={counts.members} />
-        <Stat icon={Award} label="Students" value={counts.students} tone="text-purple-600" />
-        <Stat icon={TrendingUp} label="Check-ins (7 days)" value={counts.week} tone="text-emerald-600" />
+        <Stat icon={Users} label="Parent Members" value={memberCount} />
+        <Stat icon={Award} label="Students" value={students.length} tone="text-purple-600" />
+        <Stat icon={TrendingUp} label="Check-ins (7 days)" value={week} tone="text-emerald-600" />
       </div>
 
+      <AddStudentForm parents={parents} onChange={refresh} />
+
       <Card className="p-6 border-gray-200">
-        <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2"><Users className="w-5 h-5 text-red-600" /> People</h3>
-        {!loaded ? <Loader2 className="w-5 h-5 text-gray-400 animate-spin" />
-          : (
-            <div className="divide-y divide-gray-100">
-              {members.map((p, i) => (
-                <div key={i} className="flex items-center justify-between py-3">
-                  <span className="font-semibold text-gray-900">{p.full_name || '(no name)'}</span>
-                  <span className="text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-700 font-bold capitalize">{p.role}</span>
-                </div>
-              ))}
-            </div>
-          )}
+        <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2"><Award className="w-5 h-5 text-red-600" /> Students</h3>
+        {students.length === 0 ? <p className="text-sm text-gray-500">No students yet — add one above.</p> : (
+          <div className="divide-y divide-gray-100">
+            {students.map((s) => <StudentRow key={s.id} s={s} parents={parents} onChange={refresh} />)}
+          </div>
+        )}
+      </Card>
+
+      <Card className="p-6 border-gray-200">
+        <h3 className="font-bold text-gray-900 mb-1 flex items-center gap-2"><Users className="w-5 h-5 text-red-600" /> People &amp; Roles</h3>
+        <p className="text-sm text-gray-500 mb-4">Set names and roles. Create the accounts in Supabase → Authentication; they appear here.</p>
+        <div className="divide-y divide-gray-100">
+          {profiles.map((p) => <PersonRow key={p.id} p={p} onSaved={refresh} />)}
+        </div>
       </Card>
 
       <Card className="p-6 border-gray-200">
@@ -329,6 +343,115 @@ function AdminDashboard() {
           <a href={MYSTUDIO_PAY_URL} target="_blank" rel="noopener noreferrer">Open Payments</a>
         </Button>
       </Card>
+    </div>
+  );
+}
+
+function AddStudentForm({ parents, onChange }: { parents: ProfileRow[]; onChange: () => void }) {
+  const [name, setName] = useState('');
+  const [belt, setBelt] = useState('White');
+  const [parentId, setParentId] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState('');
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!supabase || !name.trim()) return;
+    setBusy(true); setMsg('');
+    const { error } = await supabase.from('students').insert({
+      full_name: name.trim(), belt, parent_id: parentId || null,
+    });
+    setBusy(false);
+    if (error) { setMsg(error.message); return; }
+    setName(''); setBelt('White'); setParentId(''); setMsg('✓ Student added');
+    onChange();
+  };
+
+  return (
+    <Card className="p-6 border-gray-200">
+      <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2"><Plus className="w-5 h-5 text-red-600" /> Add Student</h3>
+      <form onSubmit={submit} className="grid sm:grid-cols-[1fr_auto_1fr_auto] gap-3 items-center">
+        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Student name" required
+          className="px-3 py-2 rounded-lg border border-gray-300 text-sm focus:border-red-600 focus:ring-2 focus:ring-red-100 outline-none" />
+        <select value={belt} onChange={(e) => setBelt(e.target.value)} className={selectCls}>
+          {BELTS.map((b) => <option key={b} value={b}>{b} Belt</option>)}
+        </select>
+        <select value={parentId} onChange={(e) => setParentId(e.target.value)} className={selectCls}>
+          <option value="">— Link a parent (optional) —</option>
+          {parents.map((p) => <option key={p.id} value={p.id}>{p.full_name || '(unnamed parent)'}</option>)}
+        </select>
+        <Button type="submit" disabled={busy} className="bg-red-600 hover:bg-red-700 text-white font-bold">
+          {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Add'}
+        </Button>
+      </form>
+      {msg && <p className="text-sm mt-3 text-gray-600">{msg}</p>}
+    </Card>
+  );
+}
+
+function StudentRow({ s, parents, onChange }: { s: Student; parents: ProfileRow[]; onChange: () => void }) {
+  const [belt, setBelt] = useState(s.belt ?? 'White');
+  const [parentId, setParentId] = useState(s.parent_id ?? '');
+  const [busy, setBusy] = useState(false);
+  const dirty = belt !== (s.belt ?? 'White') || (parentId || '') !== (s.parent_id ?? '');
+
+  const save = async () => {
+    if (!supabase) return;
+    setBusy(true);
+    await supabase.from('students').update({ belt, parent_id: parentId || null }).eq('id', s.id);
+    setBusy(false); onChange();
+  };
+  const del = async () => {
+    if (!supabase || !window.confirm(`Remove ${s.full_name}?`)) return;
+    await supabase.from('students').delete().eq('id', s.id);
+    onChange();
+  };
+
+  return (
+    <div className="flex flex-wrap items-center gap-2 py-3">
+      <span className="font-semibold text-gray-900 flex-1 min-w-[120px]">{s.full_name}</span>
+      <select value={belt} onChange={(e) => setBelt(e.target.value)} className={selectCls}>
+        {BELTS.map((b) => <option key={b} value={b}>{b} Belt</option>)}
+      </select>
+      <select value={parentId} onChange={(e) => setParentId(e.target.value)} className={selectCls}>
+        <option value="">— No parent —</option>
+        {parents.map((p) => <option key={p.id} value={p.id}>{p.full_name || '(unnamed parent)'}</option>)}
+      </select>
+      <Button onClick={save} disabled={!dirty || busy} variant="outline" className="border-gray-300 font-bold h-9">
+        {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save'}
+      </Button>
+      <Button onClick={del} variant="ghost" className="text-gray-400 hover:text-red-600 h-9 px-2" aria-label="Delete">
+        <Trash2 className="w-4 h-4" />
+      </Button>
+    </div>
+  );
+}
+
+function PersonRow({ p, onSaved }: { p: ProfileRow; onSaved: () => void }) {
+  const [name, setName] = useState(p.full_name ?? '');
+  const [role, setRole] = useState<Role>(p.role);
+  const [busy, setBusy] = useState(false);
+  const dirty = name !== (p.full_name ?? '') || role !== p.role;
+
+  const save = async () => {
+    if (!supabase) return;
+    setBusy(true);
+    await supabase.from('profiles').update({ full_name: name, role }).eq('id', p.id);
+    setBusy(false); onSaved();
+  };
+
+  return (
+    <div className="flex flex-wrap items-center gap-2 py-3">
+      <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name"
+        className="flex-1 min-w-[140px] px-3 py-2 rounded-lg border border-gray-300 text-sm focus:border-red-600 focus:ring-2 focus:ring-red-100 outline-none" />
+      <select value={role} onChange={(e) => setRole(e.target.value as Role)} className={selectCls}>
+        <option value="parent">Parent</option>
+        <option value="teacher">Teacher</option>
+        <option value="admin">Admin</option>
+      </select>
+      <Button onClick={save} disabled={!dirty || busy} variant="outline" className="border-gray-300 font-bold h-9">
+        {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save'}
+      </Button>
     </div>
   );
 }
