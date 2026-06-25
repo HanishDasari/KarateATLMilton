@@ -44,6 +44,22 @@ export default function Portal() {
     }
   };
 
+  // ---- Not signed in → big full-screen login page ----
+  if (!authed) {
+    return (
+      <BigLogin>
+        {demoMode ? (
+          <DemoLoginForm onLogin={loginDemo} />
+        ) : loading ? (
+          <div className="flex justify-center py-6"><Loader2 className="w-8 h-8 text-red-600 animate-spin" /></div>
+        ) : (
+          <LoginForm />
+        )}
+      </BigLogin>
+    );
+  }
+
+  // ---- Signed in → dashboard ----
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
@@ -52,25 +68,15 @@ export default function Portal() {
             <Logo className="h-10 w-auto" badgeClassName="w-10 h-10" />
             <span className="font-bold text-gray-900 hidden sm:inline">Karate Atlanta Milton</span>
           </Link>
-          {authed ? (
-            <Button variant="outline" onClick={handleSignOut} className="border-gray-300 font-semibold">
-              <LogOut className="w-4 h-4" /> Sign Out
-            </Button>
-          ) : (
-            <Link href="/" className="text-sm text-gray-600 hover:text-red-600 font-semibold inline-flex items-center gap-1">
-              <ChevronLeft className="w-4 h-4" /> Back to site
-            </Link>
-          )}
+          <Button variant="outline" onClick={handleSignOut} className="border-gray-300 font-semibold">
+            <LogOut className="w-4 h-4" /> Sign Out
+          </Button>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-8">
         {demoMode ? (
-          !demoRole ? <DemoLogin onLogin={loginDemo} /> : <DemoDashboard role={demoRole} onSwitch={loginDemo} />
-        ) : loading ? (
-          <Centered><Loader2 className="w-8 h-8 text-red-600 animate-spin" /></Centered>
-        ) : !session ? (
-          <LoginForm />
+          <DemoDashboard role={demoRole as Role} onSwitch={loginDemo} />
         ) : !profile ? (
           <Notice title="Account pending setup" body="Your login worked, but no role is assigned yet. Ask an admin to set your role in the dashboard." />
         ) : (
@@ -81,11 +87,39 @@ export default function Portal() {
   );
 }
 
+/* Full-screen branded login shell. */
+function BigLogin({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen relative flex flex-col bg-gradient-to-br from-gray-900 via-gray-900 to-black text-white overflow-hidden">
+      <div className="absolute -top-1/4 -right-1/4 w-[60%] h-[80%] bg-red-600/20 blur-3xl rounded-full pointer-events-none" />
+      <div className="relative z-10 p-5">
+        <Link href="/" className="inline-flex items-center gap-1 text-sm text-gray-300 hover:text-white font-semibold">
+          <ChevronLeft className="w-4 h-4" /> Back to site
+        </Link>
+      </div>
+      <div className="relative z-10 flex-1 flex items-center justify-center px-4 pb-20">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <div className="inline-block bg-white rounded-2xl p-3 mb-5 shadow-xl">
+              <Logo className="h-14 w-auto" badgeClassName="w-14 h-14" />
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold mb-2">Member Login</h1>
+            <p className="text-gray-300">Sign in to your Karate Atlanta Milton portal.</p>
+          </div>
+          <Card className="p-8 border-0 shadow-2xl text-gray-900 text-left">
+            {children}
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ===================== TEMPORARY HARDCODED LOGIN (demo) ===================== */
 // Active only until Supabase keys are added. Username = role, shared password.
 const DEMO_PASSWORD = 'karate123';
 
-function DemoLogin({ onLogin }: { onLogin: (role: Role) => void }) {
+function DemoLoginForm({ onLogin }: { onLogin: (role: Role) => void }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -98,37 +132,30 @@ function DemoLogin({ onLogin }: { onLogin: (role: Role) => void }) {
   };
 
   return (
-    <div className="max-w-md mx-auto">
-      <Card className="p-8 border-gray-200">
-        <div className="w-14 h-14 rounded-xl bg-red-50 flex items-center justify-center mb-5">
-          <Shield className="w-7 h-7 text-red-600" />
+    <>
+      <form onSubmit={submit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-1">Username</label>
+          <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="parent / teacher / admin"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-red-600 focus:ring-2 focus:ring-red-100 outline-none" autoComplete="username" />
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Portal Sign In</h1>
-        <p className="text-gray-500 mb-6 text-sm">Sign in to preview the Parent, Teacher, or Admin portal.</p>
-        <form onSubmit={submit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">Username</label>
-            <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="parent / teacher / admin"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-red-600 focus:ring-2 focus:ring-red-100 outline-none" autoComplete="username" />
-          </div>
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">Password</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-red-600 focus:ring-2 focus:ring-red-100 outline-none" autoComplete="current-password" />
-          </div>
-          {error && <p className="text-sm text-red-600">{error}</p>}
-          <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white font-bold">Sign In</Button>
-        </form>
-        <div className="mt-6 rounded-lg bg-amber-50 border border-amber-200 p-4 text-sm">
-          <p className="font-bold text-amber-800 mb-1">🔑 Temporary demo logins</p>
-          <p className="text-amber-700">
-            Username: <code className="font-mono font-bold">parent</code>, <code className="font-mono font-bold">teacher</code>, or <code className="font-mono font-bold">admin</code><br />
-            Password: <code className="font-mono font-bold">{DEMO_PASSWORD}</code>
-          </p>
-          <p className="text-amber-700/80 text-xs mt-2">Preview only with sample data. Real logins activate once Supabase keys are added.</p>
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-1">Password</label>
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-red-600 focus:ring-2 focus:ring-red-100 outline-none" autoComplete="current-password" />
         </div>
-      </Card>
-    </div>
+        {error && <p className="text-sm text-red-600">{error}</p>}
+        <Button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white font-bold h-12 text-base">Sign In</Button>
+      </form>
+      <div className="mt-6 rounded-lg bg-amber-50 border border-amber-200 p-4 text-sm">
+        <p className="font-bold text-amber-800 mb-1">🔑 Temporary logins</p>
+        <p className="text-amber-700">
+          Username: <code className="font-mono font-bold">parent</code>, <code className="font-mono font-bold">teacher</code>, or <code className="font-mono font-bold">admin</code><br />
+          Password: <code className="font-mono font-bold">{DEMO_PASSWORD}</code>
+        </p>
+        <p className="text-amber-700/80 text-xs mt-2">Whichever you use takes you straight into that portal.</p>
+      </div>
+    </>
   );
 }
 
@@ -285,40 +312,33 @@ function LoginForm() {
   };
 
   return (
-    <div className="max-w-md mx-auto">
-      <Card className="p-8 border-gray-200">
-        <div className="w-14 h-14 rounded-xl bg-red-50 flex items-center justify-center mb-5">
-          <Shield className="w-7 h-7 text-red-600" />
+    <>
+      <form onSubmit={submit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-1">Email</label>
+          <input
+            type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-red-600 focus:ring-2 focus:ring-red-100 outline-none"
+            placeholder="you@email.com" autoComplete="email"
+          />
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Member Sign In</h1>
-        <p className="text-gray-500 mb-6 text-sm">Parents, teachers, and admins sign in here. Your dashboard is chosen by your account role.</p>
-        <form onSubmit={submit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">Email</label>
-            <input
-              type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-red-600 focus:ring-2 focus:ring-red-100 outline-none"
-              placeholder="you@email.com" autoComplete="email"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">Password</label>
-            <input
-              type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-red-600 focus:ring-2 focus:ring-red-100 outline-none"
-              placeholder="••••••••" autoComplete="current-password"
-            />
-          </div>
-          {error && <p className="text-sm text-red-600">{error}</p>}
-          <Button type="submit" disabled={busy} className="w-full bg-red-600 hover:bg-red-700 text-white font-bold">
-            {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sign In'}
-          </Button>
-        </form>
-        <p className="text-xs text-gray-400 mt-6 text-center">
-          New family? <Link href="/#contact" className="text-red-600 font-bold">Book a free trial</Link> and we’ll create your account.
-        </p>
-      </Card>
-    </div>
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-1">Password</label>
+          <input
+            type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-red-600 focus:ring-2 focus:ring-red-100 outline-none"
+            placeholder="••••••••" autoComplete="current-password"
+          />
+        </div>
+        {error && <p className="text-sm text-red-600">{error}</p>}
+        <Button type="submit" disabled={busy} className="w-full bg-red-600 hover:bg-red-700 text-white font-bold h-12 text-base">
+          {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sign In'}
+        </Button>
+      </form>
+      <p className="text-xs text-gray-400 mt-6 text-center">
+        New family? <Link href="/#contact" className="text-red-600 font-bold">Book a free trial</Link> and we’ll create your account.
+      </p>
+    </>
   );
 }
 

@@ -10,8 +10,6 @@ import Logo from '@/components/Logo';
 // Update these if your studio's URLs change.
 // PAY link is the belt-testing fee payment (NOT monthly tuition).
 const MYSTUDIO_PAY_URL = 'https://cp.mystudio.io/e/?=2185/3778/833962//1781033351';
-// Member portal login. Confirm this matches your studio's MyStudio login page.
-const MYSTUDIO_LOGIN_URL = 'https://cp.mystudio.io/';
 
 
 /**
@@ -78,13 +76,12 @@ export default function Home() {
           <nav className="hidden md:flex items-center gap-8">
             <a href="#programs" className="text-gray-700 hover:text-red-600 transition font-medium">Programs</a>
             <a href="#schedule" className="text-gray-700 hover:text-red-600 transition font-medium">Schedule</a>
-            <a href="#portals" className="text-gray-700 hover:text-red-600 transition font-medium">Portals</a>
             <a href="#contact" className="text-gray-700 hover:text-red-600 transition font-medium">Contact</a>
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-3">
             <Button asChild variant="ghost" className="hidden md:inline-flex text-gray-700 hover:text-red-600 font-semibold">
-              <a href={MYSTUDIO_LOGIN_URL} target="_blank" rel="noopener noreferrer">Member Login</a>
+              <Link href="/portal">Member Login</Link>
             </Button>
             <Button asChild variant="outline" className="hidden sm:inline-flex border-red-600 text-red-600 hover:bg-red-50 font-bold">
               <a href={MYSTUDIO_PAY_URL} target="_blank" rel="noopener noreferrer">Pay Testing Fee</a>
@@ -394,73 +391,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ============ PORTALS SECTION ============ */}
-      <section id="portals" className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <motion.div
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-          >
-            <div className="eyebrow mb-4">Logins &amp; Portals</div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Everyone Has a Door In</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Parents, instructors, and admins each get the tools they need — securely powered by MyStudio.
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {[
-              {
-                title: 'Parent Portal',
-                icon: Heart,
-                desc: 'View your membership, pay belt-testing fees, track your child’s belt progress, and update info.',
-                cta: 'Parent Login',
-                url: '/portal',
-              },
-              {
-                title: 'Teacher Portal',
-                icon: Shield,
-                desc: 'Take attendance, manage class rosters, record belt testing results, and message families.',
-                cta: 'Teacher Login',
-                url: '/portal',
-              },
-              {
-                title: 'Admin Portal',
-                icon: Award,
-                desc: 'Billing, memberships, reporting, and full studio management for owners and front desk.',
-                cta: 'Admin Login',
-                url: '/portal',
-              },
-            ].map((p, i) => {
-              const Icon = p.icon;
-              return (
-                <Card key={i} className="p-8 flex flex-col border-gray-200 hover:shadow-xl transition">
-                  <div className="w-14 h-14 rounded-xl bg-red-50 flex items-center justify-center mb-5">
-                    <Icon className="w-7 h-7 text-red-600" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{p.title}</h3>
-                  <p className="text-gray-600 mb-6 flex-1">{p.desc}</p>
-                  <Button asChild className="bg-gray-900 hover:bg-red-600 text-white font-bold w-full">
-                    <Link href={p.url}>
-                      {p.cta}
-                      <ChevronRight className="w-4 h-4" />
-                    </Link>
-                  </Button>
-                </Card>
-              );
-            })}
-          </div>
-
-          <p className="text-center text-sm text-gray-500 mt-8 max-w-2xl mx-auto">
-            New family?{' '}
-            <a href="#contact" className="text-red-600 font-bold">Book a free trial</a>{' '}
-            and we’ll set up your parent account.
-          </p>
-        </div>
-      </section>
 
       {/* ============ TRIAL FORM SECTION ============ */}
       <section id="contact" className="py-20 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
@@ -574,7 +504,7 @@ export default function Home() {
             <div>
               <div className="font-bold text-white mb-4">Members</div>
               <p className="text-sm flex flex-col gap-2">
-                <a href={MYSTUDIO_LOGIN_URL} target="_blank" rel="noopener noreferrer" className="hover:text-red-600">Member Login</a>
+                <Link href="/portal" className="hover:text-red-600">Member Login</Link>
                 <a href={MYSTUDIO_PAY_URL} target="_blank" rel="noopener noreferrer" className="hover:text-red-600">Pay Testing Fee</a>
                 <a href="tel:+16786240506" className="hover:text-red-600">(678) 624-0506</a>
               </p>
