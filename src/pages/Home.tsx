@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'wouter';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -11,9 +12,6 @@ import Logo from '@/components/Logo';
 const MYSTUDIO_PAY_URL = 'https://cp.mystudio.io/e/?=2185/3778/833962//1781033351';
 // Member portal login. Confirm this matches your studio's MyStudio login page.
 const MYSTUDIO_LOGIN_URL = 'https://cp.mystudio.io/';
-// Staff/owner login (teachers + admins use MyStudio Business with different permissions).
-// Confirm/replace with the exact URL your staff use to sign in.
-const MYSTUDIO_STAFF_URL = 'https://business.mystudio.io/';
 
 
 /**
@@ -420,21 +418,21 @@ export default function Home() {
                 icon: Heart,
                 desc: 'View your membership, pay belt-testing fees, track your child’s belt progress, and update info.',
                 cta: 'Parent Login',
-                url: MYSTUDIO_LOGIN_URL,
+                url: '/portal/parent',
               },
               {
                 title: 'Teacher Portal',
                 icon: Shield,
                 desc: 'Take attendance, manage class rosters, record belt testing results, and message families.',
                 cta: 'Teacher Login',
-                url: MYSTUDIO_STAFF_URL,
+                url: '/portal/teacher',
               },
               {
                 title: 'Admin Portal',
                 icon: Award,
                 desc: 'Billing, memberships, reporting, and full studio management for owners and front desk.',
                 cta: 'Admin Login',
-                url: MYSTUDIO_STAFF_URL,
+                url: '/portal/admin',
               },
             ].map((p, i) => {
               const Icon = p.icon;
@@ -446,10 +444,10 @@ export default function Home() {
                   <h3 className="text-xl font-bold text-gray-900 mb-2">{p.title}</h3>
                   <p className="text-gray-600 mb-6 flex-1">{p.desc}</p>
                   <Button asChild className="bg-gray-900 hover:bg-red-600 text-white font-bold w-full">
-                    <a href={p.url} target="_blank" rel="noopener noreferrer">
+                    <Link href={p.url}>
                       {p.cta}
                       <ChevronRight className="w-4 h-4" />
-                    </a>
+                    </Link>
                   </Button>
                 </Card>
               );
