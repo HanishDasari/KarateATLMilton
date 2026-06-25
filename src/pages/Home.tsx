@@ -418,21 +418,21 @@ export default function Home() {
                 icon: Heart,
                 desc: 'View your membership, pay belt-testing fees, track your child’s belt progress, and update info.',
                 cta: 'Parent Login',
-                url: '/portal/parent',
+                url: '/portal',
               },
               {
                 title: 'Teacher Portal',
                 icon: Shield,
                 desc: 'Take attendance, manage class rosters, record belt testing results, and message families.',
                 cta: 'Teacher Login',
-                url: '/portal/teacher',
+                url: '/portal',
               },
               {
                 title: 'Admin Portal',
                 icon: Award,
                 desc: 'Billing, memberships, reporting, and full studio management for owners and front desk.',
                 cta: 'Admin Login',
-                url: '/portal/admin',
+                url: '/portal',
               },
             ].map((p, i) => {
               const Icon = p.icon;
