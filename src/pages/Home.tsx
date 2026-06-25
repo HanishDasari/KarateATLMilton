@@ -11,6 +11,9 @@ import Logo from '@/components/Logo';
 const MYSTUDIO_PAY_URL = 'https://cp.mystudio.io/e/?=2185/3778/833962//1781033351';
 // Member portal login. Confirm this matches your studio's MyStudio login page.
 const MYSTUDIO_LOGIN_URL = 'https://cp.mystudio.io/';
+// Staff/owner login (teachers + admins use MyStudio Business with different permissions).
+// Confirm/replace with the exact URL your staff use to sign in.
+const MYSTUDIO_STAFF_URL = 'https://business.mystudio.io/';
 
 
 /**
@@ -47,6 +50,7 @@ const itemVariants = {
 export default function Home() {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [schedFilter, setSchedFilter] = useState('all');
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -75,7 +79,8 @@ export default function Home() {
 
           <nav className="hidden md:flex items-center gap-8">
             <a href="#programs" className="text-gray-700 hover:text-red-600 transition font-medium">Programs</a>
-            <a href="#why" className="text-gray-700 hover:text-red-600 transition font-medium">Why Us</a>
+            <a href="#schedule" className="text-gray-700 hover:text-red-600 transition font-medium">Schedule</a>
+            <a href="#portals" className="text-gray-700 hover:text-red-600 transition font-medium">Portals</a>
             <a href="#contact" className="text-gray-700 hover:text-red-600 transition font-medium">Contact</a>
           </nav>
 
@@ -318,6 +323,144 @@ export default function Home() {
               </motion.div>
             ))}
           </motion.div>
+        </div>
+      </section>
+
+      {/* ============ SCHEDULE SECTION ============ */}
+      <section id="schedule" className="py-20">
+        <div className="container mx-auto px-4">
+          <motion.div
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+          >
+            <div className="eyebrow mb-4">Weekly Class Schedule</div>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">The Whole Schedule, One Place</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Filter by program to find class times that fit your family — then book a free trial in seconds.
+            </p>
+          </motion.div>
+
+          {/* Filter chips */}
+          <div className="flex flex-wrap justify-center gap-2 mb-8">
+            {[
+              { key: 'all', label: 'All Classes' },
+              { key: 'tots', label: 'Tiny Tigers (3–6)' },
+              { key: 'kids', label: 'Juniors (7–12)' },
+              { key: 'teens', label: 'Teens (13–17)' },
+              { key: 'adults', label: 'Adults (18+)' },
+            ].map((c) => (
+              <button
+                key={c.key}
+                onClick={() => setSchedFilter(c.key)}
+                className={`px-5 py-2 rounded-full font-bold text-sm transition ${
+                  schedFilter === c.key
+                    ? 'bg-gray-900 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
+
+          <Card className="max-w-4xl mx-auto overflow-hidden border-gray-200 p-0">
+            <div className="divide-y divide-gray-100">
+              {[
+                { cats: ['tots'], day: 'Mon / Wed', time: '4:00 – 4:30 PM', name: 'Tiny Tigers', age: 'Ages 3–6', color: 'bg-orange-100 text-orange-700' },
+                { cats: ['kids'], day: 'Mon / Wed', time: '5:00 – 5:45 PM', name: 'Juniors Beginner', age: 'Ages 7–12', color: 'bg-emerald-100 text-emerald-700' },
+                { cats: ['kids'], day: 'Tue / Thu', time: '5:00 – 5:45 PM', name: 'Juniors Advanced', age: 'Ages 7–12', color: 'bg-emerald-100 text-emerald-700' },
+                { cats: ['teens'], day: 'Tue / Thu', time: '6:00 – 6:45 PM', name: 'Teen Martial Arts', age: 'Ages 13–17', color: 'bg-blue-100 text-blue-700' },
+                { cats: ['adults'], day: 'Mon / Wed', time: '7:00 – 8:00 PM', name: 'Adult Taekwondo', age: 'Ages 18+', color: 'bg-purple-100 text-purple-700' },
+                { cats: ['adults'], day: 'Tue / Thu', time: '7:00 – 8:00 PM', name: 'Adult Taekwondo', age: 'Ages 18+', color: 'bg-purple-100 text-purple-700' },
+                { cats: ['kids', 'teens', 'adults'], day: 'Saturday', time: '10:00 – 10:45 AM', name: 'All-Levels Open Mat', age: 'All Ages', color: 'bg-gray-100 text-gray-700' },
+                { cats: ['tots', 'kids'], day: 'Saturday', time: '11:00 – 11:30 AM', name: 'Little Champions', age: 'Ages 3–8', color: 'bg-orange-100 text-orange-700' },
+              ]
+                .filter((row) => schedFilter === 'all' || row.cats.includes(schedFilter))
+                .map((row, i) => (
+                  <div key={i} className="flex flex-wrap items-center gap-x-6 gap-y-1 px-6 py-4 hover:bg-gray-50 transition">
+                    <div className="w-28 font-bold text-gray-900">{row.day}</div>
+                    <div className="w-32 text-gray-700">{row.time}</div>
+                    <div className="flex-1 min-w-[140px] font-semibold text-gray-900">{row.name}</div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${row.color}`}>{row.age}</span>
+                  </div>
+                ))}
+            </div>
+            <div className="bg-gray-50 px-6 py-4 text-sm text-gray-600">
+              ℹ️ Sample weekly times — they may vary by season. Confirm your exact class when you book a free trial:{' '}
+              <a href="tel:+16786240506" className="text-red-600 font-bold">(678) 624-0506</a>.
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* ============ PORTALS SECTION ============ */}
+      <section id="portals" className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <motion.div
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+          >
+            <div className="eyebrow mb-4">Logins &amp; Portals</div>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Everyone Has a Door In</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Parents, instructors, and admins each get the tools they need — securely powered by MyStudio.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {[
+              {
+                title: 'Parent Portal',
+                icon: Heart,
+                desc: 'View your membership, pay belt-testing fees, track your child’s belt progress, and update info.',
+                cta: 'Parent Login',
+                url: MYSTUDIO_LOGIN_URL,
+              },
+              {
+                title: 'Teacher Portal',
+                icon: Shield,
+                desc: 'Take attendance, manage class rosters, record belt testing results, and message families.',
+                cta: 'Teacher Login',
+                url: MYSTUDIO_STAFF_URL,
+              },
+              {
+                title: 'Admin Portal',
+                icon: Award,
+                desc: 'Billing, memberships, reporting, and full studio management for owners and front desk.',
+                cta: 'Admin Login',
+                url: MYSTUDIO_STAFF_URL,
+              },
+            ].map((p, i) => {
+              const Icon = p.icon;
+              return (
+                <Card key={i} className="p-8 flex flex-col border-gray-200 hover:shadow-xl transition">
+                  <div className="w-14 h-14 rounded-xl bg-red-50 flex items-center justify-center mb-5">
+                    <Icon className="w-7 h-7 text-red-600" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{p.title}</h3>
+                  <p className="text-gray-600 mb-6 flex-1">{p.desc}</p>
+                  <Button asChild className="bg-gray-900 hover:bg-red-600 text-white font-bold w-full">
+                    <a href={p.url} target="_blank" rel="noopener noreferrer">
+                      {p.cta}
+                      <ChevronRight className="w-4 h-4" />
+                    </a>
+                  </Button>
+                </Card>
+              );
+            })}
+          </div>
+
+          <p className="text-center text-sm text-gray-500 mt-8 max-w-2xl mx-auto">
+            New family?{' '}
+            <a href="#contact" className="text-red-600 font-bold">Book a free trial</a>{' '}
+            and we’ll set up your parent account.
+          </p>
         </div>
       </section>
 
