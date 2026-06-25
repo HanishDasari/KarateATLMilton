@@ -5,6 +5,14 @@ import { Card } from '@/components/ui/card';
 import { ChevronRight, Star, Shield, Zap, Heart, Award, Flame } from 'lucide-react';
 import Logo from '@/components/Logo';
 
+// ── MyStudio links ──────────────────────────────────────────────────────────
+// Update these if your studio's URLs change.
+// PAY link is the belt-testing fee payment (NOT monthly tuition).
+const MYSTUDIO_PAY_URL = 'https://cp.mystudio.io/e/?=2185/3778/833962//1781033351';
+// Member portal login. Confirm this matches your studio's MyStudio login page.
+const MYSTUDIO_LOGIN_URL = 'https://cp.mystudio.io/';
+
+
 /**
  * CHAMPIONSHIP ASCENT DESIGN PHILOSOPHY
  * - Bold, confident, championship-level aesthetic
@@ -71,10 +79,15 @@ export default function Home() {
             <a href="#contact" className="text-gray-700 hover:text-red-600 transition font-medium">Contact</a>
           </nav>
 
-          <div className="flex items-center gap-3">
-            <Button className="hidden sm:inline-flex bg-red-600 hover:bg-red-700 text-white font-bold">
-              Free Trial
-              <ChevronRight className="w-4 h-4" />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Button asChild variant="ghost" className="hidden md:inline-flex text-gray-700 hover:text-red-600 font-semibold">
+              <a href={MYSTUDIO_LOGIN_URL} target="_blank" rel="noopener noreferrer">Member Login</a>
+            </Button>
+            <Button asChild variant="outline" className="hidden sm:inline-flex border-red-600 text-red-600 hover:bg-red-50 font-bold">
+              <a href={MYSTUDIO_PAY_URL} target="_blank" rel="noopener noreferrer">Pay Testing Fee</a>
+            </Button>
+            <Button asChild className="bg-red-600 hover:bg-red-700 text-white font-bold">
+              <a href="#contact">Free Trial<ChevronRight className="w-4 h-4" /></a>
             </Button>
           </div>
         </div>
@@ -418,8 +431,12 @@ export default function Home() {
               <p className="text-sm">Mon–Fri: 2:30 PM–8:45 PM<br />Sat: 9:30 AM–12:30 PM</p>
             </div>
             <div>
-              <div className="font-bold text-white mb-4">Contact</div>
-              <p className="text-sm"><a href="tel:+16786240506" className="hover:text-red-600">(678) 624-0506</a></p>
+              <div className="font-bold text-white mb-4">Members</div>
+              <p className="text-sm flex flex-col gap-2">
+                <a href={MYSTUDIO_LOGIN_URL} target="_blank" rel="noopener noreferrer" className="hover:text-red-600">Member Login</a>
+                <a href={MYSTUDIO_PAY_URL} target="_blank" rel="noopener noreferrer" className="hover:text-red-600">Pay Testing Fee</a>
+                <a href="tel:+16786240506" className="hover:text-red-600">(678) 624-0506</a>
+              </p>
             </div>
             <div>
               <div className="font-bold text-white mb-4">Follow</div>
